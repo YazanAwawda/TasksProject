@@ -142,6 +142,24 @@ namespace TasksProject.Controllers
         {
             return _context.Users.Any(e => e.Id == id);
         }
+
+
+        // GET: api/Users/GetUserByUsername/{username}
+        [HttpGet("GetUserByUsername/{username}")]
+        public async Task<ActionResult<Users>> GetUserByUsername(string username)
+        {
+            // Query the user by username
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Return the user details
+            return Ok(user);
+        }
     }
 }
 
