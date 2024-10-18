@@ -157,7 +157,8 @@ namespace TasksProject.Controllers
             var task = await _context.Tasks.FindAsync(dto.Id);
             if (task == null)
                 return NotFound("Task not found");
-
+            // Use AutoMapper to map from the DTO to the existing task entity
+            _mapper.Map(dto, task);
             task.Id = dto.Id;
             task.TaskStatus = Status.Closed;
 
@@ -193,6 +194,22 @@ namespace TasksProject.Controllers
 
             await _context.SaveChangesAsync();
             return Ok("Task InProgress ");
+        }
+
+
+        [HttpGet("GetTasksByUserID/{usreId}")]
+        public async Task<ActionResult<Tasks>> GetTasksByUserID(int userId)
+        {
+            var user = await _context.Tasks
+                .Where(u => u.UserId == userId).ToListAsync();
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Return the  user tasks details
+            return Ok(user);
         }
 
     }

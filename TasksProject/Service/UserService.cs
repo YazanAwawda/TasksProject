@@ -20,7 +20,7 @@ namespace TasksProject.Service
         private readonly PasswordHasher<Users> _passwordHasher = new PasswordHasher<Users>();
         private readonly IMapper _mapper;
 
-        public UserService(TasksDbContext context, IConfiguration configuration, IMapper mapper)
+        public UserService(TasksDbContext context, IConfiguration configuration, IMapper mapper )
         {
             _context = context;
             _configuration = configuration;
@@ -29,7 +29,7 @@ namespace TasksProject.Service
 
         public async Task<UserResponse> LoginAsync(LoginDto loginRequest)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == loginRequest.Email);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == loginRequest.Username);
 
             if (user != null && VerifyPassword(loginRequest.PasswordHash, user.PasswordHash))
             {
@@ -53,7 +53,7 @@ namespace TasksProject.Service
 
             var user = _mapper.Map<Users>(registerRequest);
             user.PasswordHash = HashPassword(registerRequest.PasswordHash);
-            user.Role = await _context.Roles.SingleOrDefaultAsync(r => r.Name == "User"); ;
+            user.Role = await _context.Roles.SingleOrDefaultAsync(r => r.Name == "Employee"); ;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -69,7 +69,7 @@ namespace TasksProject.Service
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username), 
                 new Claim(JwtRegisteredClaimNames.Email, user.Email), 
-                new Claim(ClaimTypes.Role, user.Role?.Name ?? "User"), 
+                new Claim(ClaimTypes.Role, user.Role?.Name ?? "Employee"), 
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));

@@ -32,12 +32,13 @@ builder.Services.AddDbContext<TasksDbContext>(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+    options.AddPolicy("EmployeeOnly", policy => policy.RequireRole("Employee"));
 });
 
 
 builder.Services.AddControllers();
-
+builder.Services.AddControllers(
+options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddEndpointsApiExplorer();
 // Add AutoMapper and specify the assembly that contains the mapping profiles
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
