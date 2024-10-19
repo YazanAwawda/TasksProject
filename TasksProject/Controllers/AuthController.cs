@@ -59,7 +59,7 @@ namespace TasksProject.Controllers
             {
                 return Ok(userResponse);
             }
-            return BadRequest("Wrong account or password");
+            return BadRequest("Wrong account or user password");
         }
     }
 }
